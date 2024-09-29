@@ -3,10 +3,12 @@ import {
   Controller,
   Get,
   Post,
+  UploadedFiles,
   UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express/multer/interceptors';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { LoginRequestDto } from 'src/auth/dto/login.request.dto';
@@ -14,10 +16,13 @@ import { JwtGuard } from 'src/auth/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/user/user.decorator';
 import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
 import { SuccessInterceptor } from 'src/common/interceptor/success.interceptor';
+import { multerOptions } from 'src/common/utils/multer.options';
+import { Cat } from './cats.schema';
 import { CatsService } from './cats.service';
 import { CatCurrentDto } from './dto/cat.current.dto';
 import { ReadOnlyCatDto } from './dto/cat.dto';
 import { CatRequestDto } from './dto/cats.request.dto';
+
 @Controller('cats')
 @UseInterceptors(SuccessInterceptor)
 @UseFilters(HttpExceptionFilter)
@@ -68,5 +73,11 @@ export class CatsController {
     // return 'uploadImg';
     // return { image: `http://localhost:8000/media/cats/${files[0].filename}` };
     return this.catsService.uploadImg(cat, files);
+  }
+
+  @ApiOperation({ summary: '모든 고양이 가져오기' })
+  @Get('all')
+  getAllCat() {
+    return this.catsService.getAllCat();
   }
 }
